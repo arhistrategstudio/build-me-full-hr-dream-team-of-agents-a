@@ -1,0 +1,667 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#f59e0b" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="build me full HR dream team of Agents, a" />
+<meta name="mobile-web-app-capable" content="yes" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Dream Team - AI Agent Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .agent-card {
+            transition: all 0.3s ease;
+        }
+        .agent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .status-online {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .metric-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+        .task-item {
+            transition: all 0.2s ease;
+        }
+        .task-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .chat-message {
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+    </style>
+</head>
+<body class="scroll-smooth">
+    <div id="app" class="min-h-screen p-4 md:p-8">
+        <!-- Header -->
+        <header class="glass rounded-2xl p-6 mb-8 shadow-2xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        HR Dream Team
+                    </h1>
+                    <p class="text-slate-400 mt-1">AI-Powered Human Resources Management</p>
+                </div>
+                <div class="flex gap-3 flex-wrap">
+                    <button onclick="app.showView('dashboard')" class="px-4 py-2 rounded-lg glass hover:bg-blue-500/20 transition">
+                        Dashboard
+                    </button>
+                    <button onclick="app.showView('agents')" class="px-4 py-2 rounded-lg glass hover:bg-blue-500/20 transition">
+                        Agents
+                    </button>
+                    <button onclick="app.showView('tasks')" class="px-4 py-2 rounded-lg glass hover:bg-blue-500/20 transition">
+                        Tasks
+                    </button>
+                    <button onclick="app.showView('chat')" class="px-4 py-2 rounded-lg glass hover:bg-blue-500/20 transition">
+                        Chat
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main id="mainContent"></main>
+    </div>
+
+    <script>
+        const app = {
+            currentView: 'dashboard',
+            agents: [
+                {
+                    id: 1,
+                    name: 'RecruiterAI',
+                    role: 'Talent Acquisition Specialist',
+                    status: 'online',
+                    avatar: '👔',
+                    specialty: 'Screening resumes, scheduling interviews, candidate sourcing',
+                    tasksCompleted: 147,
+                    efficiency: 98,
+                    activeTask: 'Screening 12 candidates for Senior Developer role'
+                },
+                {
+                    id: 2,
+                    name: 'OnboardingBot',
+                    role: 'Employee Onboarding Manager',
+                    status: 'online',
+                    avatar: '🎯',
+                    specialty: 'New hire paperwork, orientation scheduling, training coordination',
+                    tasksCompleted: 89,
+                    efficiency: 95,
+                    activeTask: 'Processing onboarding for 3 new employees'
+                },
+                {
+                    id: 3,
+                    name: 'PayrollPro',
+                    role: 'Payroll & Benefits Coordinator',
+                    status: 'online',
+                    avatar: '💰',
+                    specialty: 'Salary processing, benefits enrollment, tax compliance',
+                    tasksCompleted: 203,
+                    efficiency: 99,
+                    activeTask: 'Processing monthly payroll for 450 employees'
+                },
+                {
+                    id: 4,
+                    name: 'PerformanceTracker',
+                    role: 'Performance Management Analyst',
+                    status: 'online',
+                    avatar: '📊',
+                    specialty: 'Performance reviews, goal tracking, feedback analysis',
+                    tasksCompleted: 112,
+                    efficiency: 94,
+                    activeTask: 'Preparing Q4 performance review reports'
+                },
+                {
+                    id: 5,
+                    name: 'CultureKeeper',
+                    role: 'Employee Engagement Specialist',
+                    status: 'online',
+                    avatar: '🎉',
+                    specialty: 'Employee satisfaction surveys, event planning, culture initiatives',
+                    tasksCompleted: 78,
+                    efficiency: 97,
+                    activeTask: 'Analyzing engagement survey results'
+                },
+                {
+                    id: 6,
+                    name: 'ComplianceGuard',
+                    role: 'HR Compliance Officer',
+                    status: 'online',
+                    avatar: '🛡️',
+                    specialty: 'Policy enforcement, legal compliance, documentation',
+                    tasksCompleted: 156,
+                    efficiency: 99,
+                    activeTask: 'Updating employee handbook for 2024'
+                },
+                {
+                    id: 7,
+                    name: 'TrainingMentor',
+                    role: 'Learning & Development Coordinator',
+                    status: 'online',
+                    avatar: '📚',
+                    specialty: 'Training programs, skill assessments, career development',
+                    tasksCompleted: 134,
+                    efficiency: 96,
+                    activeTask: 'Launching leadership development program'
+                },
+                {
+                    id: 8,
+                    name: 'ExitAnalyst',
+                    role: 'Offboarding & Retention Specialist',
+                    status: 'online',
+                    avatar: '🚪',
+                    specialty: 'Exit interviews, retention analysis, knowledge transfer',
+                    tasksCompleted: 45,
+                    efficiency: 93,
+                    activeTask: 'Conducting exit interview analysis'
+                }
+            ],
+            tasks: [
+                { id: 1, title: 'Screen 50 applications for DevOps role', assignedTo: 'RecruiterAI', priority: 'high', status: 'in-progress', dueDate: '2024-01-15' },
+                { id: 2, title: 'Schedule 8 interviews for next week', assignedTo: 'RecruiterAI', priority: 'medium', status: 'pending', dueDate: '2024-01-12' },
+                { id: 3, title: 'Process new hire paperwork (5 employees)', assignedTo: 'OnboardingBot', priority: 'high', status: 'in-progress', dueDate: '2024-01-10' },
+                { id: 4, title: 'Run monthly payroll (450 employees)', assignedTo: 'PayrollPro', priority: 'critical', status: 'in-progress', dueDate: '2024-01-05' },
+                { id: 5, title: 'Generate Q4 performance reports', assignedTo: 'PerformanceTracker', priority: 'high', status: 'in-progress', dueDate: '2024-01-08' },
+                { id: 6, title: 'Analyze employee engagement survey', assignedTo: 'CultureKeeper', priority: 'medium', status: 'completed', dueDate: '2024-01-03' },
+                { id: 7, title: 'Update compliance documentation', assignedTo: 'ComplianceGuard', priority: 'high', status: 'in-progress', dueDate: '2024-01-20' },
+                { id: 8, title: 'Launch Q1 training programs', assignedTo: 'TrainingMentor', priority: 'medium', status: 'pending', dueDate: '2024-01-25' },
+                { id: 9, title: 'Review retention metrics', assignedTo: 'ExitAnalyst', priority: 'low', status: 'completed', dueDate: '2024-01-02' },
+                { id: 10, title: 'Coordinate benefits enrollment', assignedTo: 'PayrollPro', priority: 'medium', status: 'pending', dueDate: '2024-01-18' }
+            ],
+            chatMessages: [],
+
+            init() {
+                this.loadFromStorage();
+                this.showView('dashboard');
+                this.startAgentSimulation();
+            },
+
+            loadFromStorage() {
+                const stored = localStorage.getItem('hrDreamTeam');
+                if (stored) {
+                    const data = JSON.parse(stored);
+                    this.tasks = data.tasks || this.tasks;
+                    this.chatMessages = data.chatMessages || [];
+                }
+            },
+
+            saveToStorage() {
+                localStorage.setItem('hrDreamTeam', JSON.stringify({
+                    tasks: this.tasks,
+                    chatMessages: this.chatMessages
+                }));
+            },
+
+            showView(view) {
+                this.currentView = view;
+                const content = document.getElementById('mainContent');
+                
+                switch(view) {
+                    case 'dashboard':
+                        content.innerHTML = this.renderDashboard();
+                        break;
+                    case 'agents':
+                        content.innerHTML = this.renderAgents();
+                        break;
+                    case 'tasks':
+                        content.innerHTML = this.renderTasks();
+                        break;
+                    case 'chat':
+                        content.innerHTML = this.renderChat();
+                        setTimeout(() => this.scrollChatToBottom(), 100);
+                        break;
+                }
+            },
+
+            renderDashboard() {
+                const totalTasks = this.tasks.length;
+                const completedTasks = this.tasks.filter(t => t.status === 'completed').length;
+                const inProgressTasks = this.tasks.filter(t => t.status === 'in-progress').length;
+                const avgEfficiency = Math.round(this.agents.reduce((sum, a) => sum + a.efficiency, 0) / this.agents.length);
+
+                return `
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="metric-card glass rounded-xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Active Agents</p>
+                                    <p class="text-3xl font-bold mt-2">${this.agents.length}</p>
+                                </div>
+                                <div class="text-4xl">🤖</div>
+                            </div>
+                        </div>
+                        <div class="metric-card glass rounded-xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Tasks Completed</p>
+                                    <p class="text-3xl font-bold mt-2">${completedTasks}/${totalTasks}</p>
+                                </div>
+                                <div class="text-4xl">✅</div>
+                            </div>
+                        </div>
+                        <div class="metric-card glass rounded-xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm">In Progress</p>
+                                    <p class="text-3xl font-bold mt-2">${inProgressTasks}</p>
+                                </div>
+                                <div class="text-4xl">⚡</div>
+                            </div>
+                        </div>
+                        <div class="metric-card glass rounded-xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Avg Efficiency</p>
+                                    <p class="text-3xl font-bold mt-2">${avgEfficiency}%</p>
+                                </div>
+                                <div class="text-4xl">📈</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="glass rounded-xl p-6 shadow-lg">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                                <span>🎯</span> Active Tasks
+                            </h2>
+                            <div class="space-y-3 max-h-96 overflow-y-auto">
+                                ${this.tasks.filter(t => t.status !== 'completed').slice(0, 5).map(task => `
+                                    <div class="task-item glass rounded-lg p-4 cursor-pointer" onclick="app.showView('tasks')">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h3 class="font-semibold text-white">${task.title}</h3>
+                                            <span class="px-2 py-1 rounded text-xs ${
+                                                task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
+                                                task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                                                task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                'bg-green-500/20 text-green-400'
+                                            }">${task.priority}</span>
+                                        </div>
+                                        <p class="text-sm text-slate-400">Assigned to: ${task.assignedTo}</p>
+                                        <p class="text-xs text-slate-500 mt-1">Due: ${task.dueDate}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-xl p-6 shadow-lg">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                                <span>👥</span> Top Performers
+                            </h2>
+                            <div class="space-y-4">
+                                ${this.agents.sort((a, b) => b.efficiency - a.efficiency).slice(0, 5).map(agent => `
+                                    <div class="flex items-center justify-between p-4 glass rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-3xl">${agent.avatar}</div>
+                                            <div>
+                                                <h3 class="font-semibold text-white">${agent.name}</h3>
+                                                <p class="text-xs text-slate-400">${agent.role}</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-2xl font-bold text-blue-400">${agent.efficiency}%</p>
+                                            <p class="text-xs text-slate-400">${agent.tasksCompleted} tasks</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderAgents() {
+                return `
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold mb-2">AI Agent Team</h2>
+                        <p class="text-slate-400">Your complete HR automation workforce</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        ${this.agents.map(agent => `
+                            <div class="agent-card glass rounded-xl p-6 shadow-lg">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="text-5xl">${agent.avatar}</div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-green-400 status-online"></span>
+                                        <span class="text-xs text-green-400">Online</span>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-1">${agent.name}</h3>
+                                <p class="text-sm text-blue-400 mb-3">${agent.role}</p>
+                                <p class="text-xs text-slate-400 mb-4 line-clamp-2">${agent.specialty}</p>
+                                
+                                <div class="glass rounded-lg p-3 mb-4">
+                                    <p class="text-xs text-slate-300 mb-2">Current Task:</p>
+                                    <p class="text-sm text-white">${agent.activeTask}</p>
+                                </div>
+
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-xs text-slate-400">Efficiency</p>
+                                        <p class="text-lg font-bold text-green-400">${agent.efficiency}%</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-slate-400">Completed</p>
+                                        <p class="text-lg font-bold text-blue-400">${agent.tasksCompleted}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            renderTasks() {
+                return `
+                    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold mb-2">Task Management</h2>
+                            <p class="text-slate-400">Monitor and manage all HR tasks</p>
+                        </div>
+                        <button onclick="app.addNewTask()" class="btn-primary px-6 py-3 rounded-lg font-semibold shadow-lg">
+                            + Add New Task
+                        </button>
+                    </div>
+
+                    <div class="glass rounded-xl p-6 shadow-lg mb-6">
+                        <div class="flex gap-3 mb-6 flex-wrap">
+                            <button onclick="app.filterTasks('all')" class="px-4 py-2 rounded-lg glass hover:bg-blue-500/20 transition">All</button>
+                            <button onclick="app.filterTasks('pending')" class="px-4 py-2 rounded-lg glass hover:bg-yellow-500/20 transition">Pending</button>
+                            <button onclick="app.filterTasks('in-progress')" class="px-4 py-2 rounded-lg glass hover:bg-blue-500/20 transition">In Progress</button>
+                            <button onclick="app.filterTasks('completed')" class="px-4 py-2 rounded-lg glass hover:bg-green-500/20 transition">Completed</button>
+                        </div>
+
+                        <div class="space-y-3" id="taskList">
+                            ${this.tasks.map(task => `
+                                <div class="task-item glass rounded-lg p-4">
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <input type="checkbox" ${task.status === 'completed' ? 'checked' : ''} 
+                                                    onchange="app.toggleTaskStatus(${task.id})"
+                                                    class="w-5 h-5 rounded" aria-label="Mark task as completed">
+                                                <h3 class="font-semibold text-white ${task.status === 'completed' ? 'line-through opacity-60' : ''}">${task.title}</h3>
+                                            </div>
+                                            <div class="flex flex-wrap gap-2 text-sm text-slate-400 ml-8">
+                                                <span>👤 ${task.assignedTo}</span>
+                                                <span>📅 ${task.dueDate}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="px-3 py-1 rounded-full text-xs ${
+                                                task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
+                                                task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                                                task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                'bg-green-500/20 text-green-400'
+                                            }">${task.priority}</span>
+                                            <span class="px-3 py-1 rounded-full text-xs ${
+                                                task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                                                task.status === 'in-progress' ? 'bg-blue-500/20 text-blue-400' :
+                                                'bg-slate-500/20 text-slate-400'
+                                            }">${task.status}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            renderChat() {
+                return `
+                    <div class="glass rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto" style="height: calc(100vh - 200px);">
+                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+                            <h2 class="text-2xl font-bold flex items-center gap-2">
+                                <span>💬</span> Team Chat
+                            </h2>
+                            <p class="text-blue-100 text-sm mt-1">Communicate with your AI agents</p>
+                        </div>
+                        
+                        <div id="chatMessages" class="p-6 overflow-y-auto space-y-4" style="height: calc(100% - 180px);">
+                            ${this.chatMessages.length === 0 ? `
+                                <div class="text-center text-slate-400 py-12">
+                                    <p class="text-5xl mb-4">👋</p>
+                                    <p>No messages yet. Start a conversation with your HR team!</p>
+                                </div>
+                            ` : this.chatMessages.map(msg => `
+                                <div class="chat-message flex ${msg.sender === 'You' ? 'justify-end' : 'justify-start'}">
+                                    <div class="max-w-xs md:max-w-md">
+                                        <div class="flex items-center gap-2 mb-1 ${msg.sender === 'You' ? 'justify-end' : ''}">
+                                            <span class="text-sm font-semibold ${msg.sender === 'You' ? 'text-blue-400' : 'text-purple-400'}">${msg.sender}</span>
+                                            <span class="text-xs text-slate-500">${msg.time}</span>
+                                        </div>
+                                        <div class="${msg.sender === 'You' ? 'bg-blue-600' : 'glass'} rounded-lg p-3">
+                                            <p class="text-sm text-white">${msg.text}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="p-4 border-t border-slate-700">
+                            <div class="flex gap-3">
+                                <input 
+                                    type="text" 
+                                    id="chatInput"
+                                    placeholder="Type your message..."
+                                    class="flex-1 bg-slate-800 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onkeypress="if(event.key === 'Enter') app.sendMessage()"
+                                    aria-label="Chat message input">
+                                <button onclick="app.sendMessage()" class="btn-primary px-6 py-3 rounded-lg font-semibold shadow-lg">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            toggleTaskStatus(taskId) {
+                const task = this.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.status = task.status === 'completed' ? 'in-progress' : 'completed';
+                    this.saveToStorage();
+                    this.showView('tasks');
+                }
+            },
+
+            filterTasks(filter) {
+                const taskList = document.getElementById('taskList');
+                let filtered = this.tasks;
+                
+                if (filter !== 'all') {
+                    filtered = this.tasks.filter(t => t.status === filter);
+                }
+
+                taskList.innerHTML = filtered.map(task => `
+                    <div class="task-item glass rounded-lg p-4">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <input type="checkbox" ${task.status === 'completed' ? 'checked' : ''} 
+                                        onchange="app.toggleTaskStatus(${task.id})"
+                                        class="w-5 h-5 rounded" aria-label="Mark task as completed">
+                                    <h3 class="font-semibold text-white ${task.status === 'completed' ? 'line-through opacity-60' : ''}">${task.title}</h3>
+                                </div>
+                                <div class="flex flex-wrap gap-2 text-sm text-slate-400 ml-8">
+                                    <span>👤 ${task.assignedTo}</span>
+                                    <span>📅 ${task.dueDate}</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs ${
+                                    task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
+                                    task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                                    task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                    'bg-green-500/20 text-green-400'
+                                }">${task.priority}</span>
+                                <span class="px-3 py-1 rounded-full text-xs ${
+                                    task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                                    task.status === 'in-progress' ? 'bg-blue-500/20 text-blue-400' :
+                                    'bg-slate-500/20 text-slate-400'
+                                }">${task.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            addNewTask() {
+                const taskTitles = [
+                    'Review benefits enrollment changes',
+                    'Process background checks for new hires',
+                    'Update employee training materials',
+                    'Conduct salary benchmarking analysis',
+                    'Organize team building event',
+                    'Review and update job descriptions',
+                    'Process leave requests for next month'
+                ];
+                const priorities = ['low', 'medium', 'high'];
+                const statuses = ['pending', 'in-progress'];
+                
+                const newTask = {
+                    id: this.tasks.length + 1,
+                    title: taskTitles[Math.floor(Math.random() * taskTitles.length)],
+                    assignedTo: this.agents[Math.floor(Math.random() * this.agents.length)].name,
+                    priority: priorities[Math.floor(Math.random() * priorities.length)],
+                    status: statuses[Math.floor(Math.random() * statuses.length)],
+                    dueDate: new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                };
+                
+                this.tasks.unshift(newTask);
+                this.saveToStorage();
+                this.showView('tasks');
+            },
+
+            sendMessage() {
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                
+                if (!text) return;
+
+                const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                
+                this.chatMessages.push({
+                    sender: 'You',
+                    text: text,
+                    time: time
+                });
+
+                input.value = '';
+                
+                setTimeout(() => {
+                    const responses = [
+                        { agent: 'RecruiterAI', text: 'I\'ve screened the candidates and shortlisted 5 top profiles for your review.' },
+                        { agent: 'PayrollPro', text: 'Monthly payroll processing is complete. All 450 employees paid successfully.' },
+                        { agent: 'OnboardingBot', text: 'New hire orientation scheduled for Monday. All documents are ready.' },
+                        { agent: 'PerformanceTracker', text: 'Q4 performance reports are ready. 85% of employees exceeded targets.' },
+                        { agent: 'CultureKeeper', text: 'Employee satisfaction score increased by 12% this quarter!' },
+                        { agent: 'ComplianceGuard', text: 'All compliance documentation is up to date and audit-ready.' },
+                        { agent: 'TrainingMentor', text: 'New training program has 95% enrollment rate. Great engagement!' },
+                        { agent: 'ExitAnalyst', text: 'Exit interview insights compiled. Main retention focus areas identified.' }
+                    ];
+                    
+                    const response = responses[Math.floor(Math.random() * responses.length)];
+                    const responseTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                    
+                    this.chatMessages.push({
+                        sender: response.agent,
+                        text: response.text,
+                        time: responseTime
+                    });
+                    
+                    this.saveToStorage();
+                    this.showView('chat');
+                }, 1000);
+
+                this.saveToStorage();
+                this.showView('chat');
+            },
+
+            scrollChatToBottom() {
+                const chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            },
+
+            startAgentSimulation() {
+                setInterval(() => {
+                    this.agents.forEach(agent => {
+                        if (Math.random() > 0.7) {
+                            agent.tasksCompleted += 1;
+                        }
+                    });
+                    
+                    if (this.currentView === 'dashboard' || this.currentView === 'agents') {
+                        this.showView(this.currentView);
+                    }
+                }, 10000);
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>
+```
